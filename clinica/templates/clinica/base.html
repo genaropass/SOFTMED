@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SofMed - Sistema Médico{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>SofMed</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item">
+                    <a href="{% url 'inicio' %}" class="nav-link">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'servicios' %}" class="nav-link">Servicios</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'registro_pacientes' %}" class="nav-link">Registro de Pacientes</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'contacto' %}" class="nav-link">Contacto</a>
+                </li>
+                {% if request.session.medico_autenticado %}
+                <li class="nav-item">
+                    <a href="{% url 'logout_medico' %}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'login_medico' %}" class="nav-link">
+                        <i class="fas fa-user-md"></i> Acceso Médico
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2025 SofMed by GenPass - Sistema Médico. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
+

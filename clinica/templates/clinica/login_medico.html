@@ -1,0 +1,64 @@
+{% extends 'clinica/base.html' %}
+
+{% block title %}Acceso Médico - SofMed{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Acceso Médico</h1>
+    <p>Área restringida para personal médico autorizado</p>
+</div>
+
+<div class="container">
+    <div class="login-section">
+        <div class="login-card">
+            <div class="login-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <h2>Iniciar Sesión</h2>
+            
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="login-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Ingrese la contraseña de acceso"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="{% url 'inicio' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+

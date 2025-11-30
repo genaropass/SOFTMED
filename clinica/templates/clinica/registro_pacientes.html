@@ -1,0 +1,223 @@
+{% extends 'clinica/base.html' %}
+
+{% block title %}Registro de Pacientes - SofMed{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Registro de Pacientes</h1>
+    <p>Gestión completa del registro de pacientes - Área Médica</p>
+    <div class="medico-actions">
+        <a href="{% url 'logout_medico' %}" class="btn btn-secondary">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-section">
+        <h2 class="section-title">Agregar Nuevo Paciente</h2>
+        <form method="POST" action="{% url 'agregar_paciente' %}" class="patient-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre" class="form-label">
+                    <i class="fas fa-user"></i> Nombre del Paciente
+                </label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    class="form-input" 
+                    placeholder="Ingrese el nombre completo"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_nacimiento" class="form-label">
+                    <i class="fas fa-calendar"></i> Fecha de Nacimiento
+                </label>
+                <input 
+                    type="date" 
+                    id="fecha_nacimiento" 
+                    name="fecha_nacimiento" 
+                    class="form-input" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="genero" class="form-label">
+                    <i class="fas fa-venus-mars"></i> Género
+                </label>
+                <select id="genero" name="genero" class="form-input" required>
+                    <option value="">Seleccione un género</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="servicio_medico" class="form-label">
+                    <i class="fas fa-stethoscope"></i> Servicio Médico Solicitado
+                </label>
+                <select id="servicio_medico" name="servicio_medico" class="form-input">
+                    <option value="">Seleccione un servicio (opcional)</option>
+                    <option value="Consulta General">Consulta General</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Neumología">Neumología</option>
+                    <option value="Neurología">Neurología</option>
+                    <option value="Pediatría">Pediatría</option>
+                    <option value="Radiología">Radiología</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="obra_social" class="form-label">
+                    <i class="fas fa-hospital"></i> Obra Social
+                </label>
+                <select id="obra_social" name="obra_social" class="form-input">
+                    <option value="">Seleccione una obra social (opcional)</option>
+                    <option value="Ninguna">Ninguna</option>
+                    <option value="OSDE">OSDE</option>
+                    <option value="Swiss Medical">Swiss Medical</option>
+                    <option value="Medicus">Medicus</option>
+                    <option value="Obra Social del Estado">Obra Social del Estado</option>
+                    <option value="PAMI">PAMI</option>
+                    <option value="OSECAC">OSECAC</option>
+                    <option value="IOMA">IOMA</option>
+                    <option value="OSPE">OSPE</option>
+                    <option value="Otra">Otra</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Registrar Paciente
+            </button>
+        </form>
+    </div>
+
+    <div class="table-section">
+        <div class="search-header">
+            <h2 class="section-title">Lista de Pacientes</h2>
+            <form method="GET" action="{% url 'registro_pacientes' %}" class="search-form">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        name="buscar" 
+                        class="search-input" 
+                        placeholder="Buscar por nombre, género o ID..."
+                        value="{{ termino_busqueda }}"
+                    >
+                    {% if termino_busqueda %}
+                    <a href="{% url 'registro_pacientes' %}" class="search-clear" title="Limpiar búsqueda">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-search">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </form>
+        </div>
+        
+        {% if termino_busqueda %}
+        <div class="search-results-info">
+            <p>
+                <i class="fas fa-info-circle"></i>
+                Mostrando {{ resultados_encontrados }} resultado(s) de {{ total_pacientes }} paciente(s) para "<strong>{{ termino_busqueda }}</strong>"
+            </p>
+        </div>
+        {% else %}
+        <div class="search-results-info">
+            <p>
+                <i class="fas fa-users"></i>
+                Total de pacientes registrados: <strong>{{ total_pacientes }}</strong>
+            </p>
+        </div>
+        {% endif %}
+        
+        {% if pacientes %}
+        <div class="table-responsive">
+            <table class="patients-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Edad</th>
+                        <th>Género</th>
+                        <th>Servicio Médico</th>
+                        <th>Obra Social</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    <tr>
+                        <td>{{ paciente.0 }}</td>
+                        <td>
+                            <a href="{% url 'ver_paciente' paciente.0 %}" class="patient-link">
+                                {{ paciente.1 }}
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </td>
+                        <td>{{ paciente.2 }}</td>
+                        <td>{{ paciente.3 }} años</td>
+                        <td>{{ paciente.4 }}</td>
+                        <td>{{ paciente.5|default:"No especificado" }}</td>
+                        <td>{{ paciente.6|default:"No especificado" }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'ver_paciente' paciente.0 %}" class="btn-action btn-view" title="Ver detalles">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <form method="POST" action="{% url 'eliminar_paciente' paciente.0 %}" class="delete-form" onsubmit="return confirmarEliminacion('{{ paciente.1 }}')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-action btn-delete" title="Eliminar paciente">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            {% if termino_busqueda %}
+            <i class="fas fa-search"></i>
+            <p>No se encontraron pacientes que coincidan con "<strong>{{ termino_busqueda }}</strong>".</p>
+            <p style="margin-top: 1rem;">
+                <a href="{% url 'registro_pacientes' %}" class="btn btn-primary" style="text-decoration: none; display: inline-block;">
+                    <i class="fas fa-list"></i> Ver todos los pacientes
+                </a>
+            </p>
+            {% else %}
+            <i class="fas fa-users"></i>
+            <p>No hay pacientes registrados aún.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function confirmarEliminacion(nombrePaciente) {
+    return confirm(`¿Está seguro que desea eliminar al paciente "${nombrePaciente}"?\n\nEsta acción eliminará:\n- Los datos del paciente\n- Todo el historial clínico asociado\n\nEsta acción NO se puede deshacer.`);
+}
+</script>
+{% endblock %}
+

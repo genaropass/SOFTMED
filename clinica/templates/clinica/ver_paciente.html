@@ -1,0 +1,214 @@
+{% extends 'clinica/base.html' %}
+
+{% block title %}Historial Clínico - {{ paciente.1 }} - SofMed{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Historial Clínico</h1>
+    <p>Información del paciente y registro médico</p>
+    <div class="medico-actions">
+        <a href="{% url 'registro_pacientes' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a Lista
+        </a>
+        <form method="POST" action="{% url 'eliminar_paciente' paciente.0 %}" class="delete-form-inline" onsubmit="return confirmarEliminacion('{{ paciente.1 }}')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Eliminar Paciente
+            </button>
+        </form>
+        <a href="{% url 'logout_medico' %}" class="btn btn-secondary">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Información del Paciente -->
+    <div class="patient-info-section">
+        <h2 class="section-title">
+            <i class="fas fa-user"></i> Información del Paciente
+        </h2>
+        <div class="patient-info-grid">
+            <div class="info-item">
+                <strong>ID:</strong> {{ paciente.0 }}
+            </div>
+            <div class="info-item">
+                <strong>Nombre:</strong> {{ paciente.1 }}
+            </div>
+            <div class="info-item">
+                <strong>Fecha de Nacimiento:</strong> {{ paciente.2 }}
+            </div>
+            <div class="info-item">
+                <strong>Edad:</strong> {{ paciente.3 }} años
+            </div>
+            <div class="info-item">
+                <strong>Género:</strong> {{ paciente.4 }}
+            </div>
+            <div class="info-item">
+                <strong>Servicio Médico:</strong> {{ paciente.5 }}
+            </div>
+            <div class="info-item">
+                <strong>Obra Social:</strong> {{ paciente.6 }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario para Agregar Historial Clínico -->
+    <div class="form-section">
+        <h2 class="section-title">
+            <i class="fas fa-file-medical"></i> Agregar Entrada al Historial Clínico
+        </h2>
+        <form method="POST" action="{% url 'agregar_historial' paciente.0 %}" class="patient-form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha" class="form-label">
+                        <i class="fas fa-calendar"></i> Fecha de la Consulta *
+                    </label>
+                    <input 
+                        type="date" 
+                        id="fecha" 
+                        name="fecha" 
+                        class="form-input" 
+                        value="{{ today|date:'Y-m-d' }}"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notas" class="form-label">
+                    <i class="fas fa-stethoscope"></i> Motivo de Consulta / Notas *
+                </label>
+                <textarea 
+                    id="notas" 
+                    name="notas" 
+                    class="form-input" 
+                    rows="3"
+                    placeholder="Describa el motivo de la consulta, síntomas, quejas del paciente..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="diagnostico" class="form-label">
+                    <i class="fas fa-diagnoses"></i> Diagnóstico
+                </label>
+                <textarea 
+                    id="diagnostico" 
+                    name="diagnostico" 
+                    class="form-input" 
+                    rows="2"
+                    placeholder="Diagnóstico médico (opcional)"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tratamiento" class="form-label">
+                    <i class="fas fa-pills"></i> Tratamiento
+                </label>
+                <textarea 
+                    id="tratamiento" 
+                    name="tratamiento" 
+                    class="form-input" 
+                    rows="2"
+                    placeholder="Tratamiento prescrito, medicamentos, procedimientos (opcional)"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones" class="form-label">
+                    <i class="fas fa-clipboard"></i> Observaciones Adicionales
+                </label>
+                <textarea 
+                    id="observaciones" 
+                    name="observaciones" 
+                    class="form-input" 
+                    rows="3"
+                    placeholder="Lesiones, problemas médicos, observaciones adicionales (opcional)"
+                ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Historial Clínico
+            </button>
+        </form>
+    </div>
+
+    <!-- Historial Clínico Existente -->
+    <div class="historial-section">
+        <h2 class="section-title">
+            <i class="fas fa-history"></i> Historial Clínico
+        </h2>
+        
+        {% if historial %}
+        <div class="historial-list">
+            {% for entrada in historial %}
+            <div class="historial-item">
+                <div class="historial-header">
+                    <div class="historial-date">
+                        <i class="fas fa-calendar-check"></i>
+                        <strong>{{ entrada.1 }}</strong>
+                    </div>
+                    <div class="historial-id">
+                        ID: {{ entrada.0 }}
+                    </div>
+                </div>
+                
+                <div class="historial-content">
+                    <div class="historial-field">
+                        <strong><i class="fas fa-stethoscope"></i> Motivo de Consulta:</strong>
+                        <p>{{ entrada.2 }}</p>
+                    </div>
+                    
+                    {% if entrada.3 %}
+                    <div class="historial-field">
+                        <strong><i class="fas fa-diagnoses"></i> Diagnóstico:</strong>
+                        <p>{{ entrada.3 }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if entrada.4 %}
+                    <div class="historial-field">
+                        <strong><i class="fas fa-pills"></i> Tratamiento:</strong>
+                        <p>{{ entrada.4 }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if entrada.5 %}
+                    <div class="historial-field">
+                        <strong><i class="fas fa-clipboard"></i> Observaciones:</strong>
+                        <p>{{ entrada.5 }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-file-medical"></i>
+            <p>No hay registros en el historial clínico de este paciente.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function confirmarEliminacion(nombrePaciente) {
+    return confirm(`¿Está seguro que desea eliminar al paciente "${nombrePaciente}"?\n\nEsta acción eliminará:\n- Los datos del paciente\n- Todo el historial clínico asociado\n\nEsta acción NO se puede deshacer.`);
+}
+</script>
+{% endblock %}
+
+
+

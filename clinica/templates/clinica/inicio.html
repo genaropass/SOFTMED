@@ -1,0 +1,130 @@
+{% extends 'clinica/base.html' %}
+
+{% block title %}Inicio - SofMed{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Bienvenido a SofMed</h1>
+        <p class="hero-subtitle">Sistema de Gestión Médica Profesional</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="form-section">
+        <h2 class="section-title">Registro de Paciente</h2>
+        
+        {% if mensaje %}
+        <div class="alert alert-{{ tipo_mensaje }}">
+            <i class="fas {% if tipo_mensaje == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+            {{ mensaje }}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="patient-form" id="patientForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre" class="form-label">
+                    <i class="fas fa-user"></i> Nombre del Paciente
+                </label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    class="form-input" 
+                    placeholder="Ingrese el nombre completo"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_nacimiento" class="form-label">
+                    <i class="fas fa-calendar"></i> Fecha de Nacimiento
+                </label>
+                <input 
+                    type="date" 
+                    id="fecha_nacimiento" 
+                    name="fecha_nacimiento" 
+                    class="form-input" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="genero" class="form-label">
+                    <i class="fas fa-venus-mars"></i> Género
+                </label>
+                <select id="genero" name="genero" class="form-input" required>
+                    <option value="">Seleccione un género</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="servicio_medico" class="form-label">
+                    <i class="fas fa-stethoscope"></i> Servicio Médico Solicitado
+                </label>
+                <select id="servicio_medico" name="servicio_medico" class="form-input">
+                    <option value="">Seleccione un servicio (opcional)</option>
+                    <option value="Consulta General">Consulta General</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Neumología">Neumología</option>
+                    <option value="Neurología">Neurología</option>
+                    <option value="Pediatría">Pediatría</option>
+                    <option value="Radiología">Radiología</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="obra_social" class="form-label">
+                    <i class="fas fa-hospital"></i> Obra Social
+                </label>
+                <select id="obra_social" name="obra_social" class="form-input">
+                    <option value="">Seleccione una obra social (opcional)</option>
+                    <option value="Ninguna">Ninguna</option>
+                    <option value="OSDE">OSDE</option>
+                    <option value="Swiss Medical">Swiss Medical</option>
+                    <option value="Medicus">Medicus</option>
+                    <option value="Obra Social del Estado">Obra Social del Estado</option>
+                    <option value="PAMI">PAMI</option>
+                    <option value="OSECAC">OSECAC</option>
+                    <option value="IOMA">IOMA</option>
+                    <option value="OSPE">OSPE</option>
+                    <option value="Otra">Otra</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Registrar Paciente
+            </button>
+        </form>
+    </div>
+
+    <div class="info-cards">
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <h3>Atención Profesional</h3>
+            <p>Personal médico altamente capacitado para brindar la mejor atención.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h3>Historial Clínico</h3>
+            <p>Gestión completa del historial médico de cada paciente.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Seguridad</h3>
+            <p>Protección y confidencialidad de la información médica.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
