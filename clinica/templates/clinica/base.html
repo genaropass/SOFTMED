@@ -51,7 +51,7 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
+    
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
@@ -64,7 +64,7 @@
     </footer>
 
     <script>
-        // Toggle mobile menu
+        // menu hamburguesa
         const navToggle = document.getElementById('navToggle');
         const navMenu = document.getElementById('navMenu');
 
@@ -73,7 +73,7 @@
             navToggle.classList.toggle('active');
         });
 
-        // Close menu when clicking on a link
+        // cierra menu cuando se hace click en un enlace
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('active');

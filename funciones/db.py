@@ -48,7 +48,7 @@ def crear_base_de_datos():
         except sqlite3.OperationalError:
             pass  # Error al agregar columna
     
-    # Crear tabla visitas (historial clínico) si no existe
+    # crear tabla visitas (historial clínico) si no existe
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS visitas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,7 +62,7 @@ def crear_base_de_datos():
         )
     ''')
     
-    # Agregar nuevas columnas si no existen
+    # agregar nuevas columnas si no existen
     cursor.execute("PRAGMA table_info(visitas)")
     columnas_visitas = [col[1] for col in cursor.fetchall()]
     
@@ -232,16 +232,16 @@ def eliminar_paciente(paciente_id):
     connect = sqlite3.connect(db_name)
     cursor = connect.cursor()
     
-    # Primero verificar que el paciente existe
+    # primero verificar que el paciente existe
     cursor.execute("SELECT id FROM pacientes WHERE id = ?", (paciente_id,))
     if not cursor.fetchone():
         connect.close()
         return False
     
-    # Eliminar primero el historial clínico (visitas)
+    # eliminar primero el historial clínico (visitas)
     cursor.execute("DELETE FROM visitas WHERE id_paciente = ?", (paciente_id,))
     
-    # Luego eliminar el paciente
+    # luego eliminar el paciente
     cursor.execute("DELETE FROM pacientes WHERE id = ?", (paciente_id,))
     
     connect.commit()

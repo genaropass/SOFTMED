@@ -17,7 +17,7 @@ from datetime import datetime
 # Asegurar que la base de datos existe
 crear_base_de_datos()
 
-# Decorador simple para verificar autenticación de médico
+# decorador simple para verificar autenticacion de med
 def requiere_medico(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.session.get('medico_autenticado'):
@@ -77,8 +77,8 @@ def login_medico(request):
     """
     if request.method == 'POST':
         password = request.POST.get('password', '').strip()
-        # Contraseña simple para el médico (en producción usar Django auth)
-        if password == 'medico123':  # Cambiar por una contraseña segura
+        #contraseña 
+        if password == 'medico123': 
             request.session['medico_autenticado'] = True
             messages.success(request, 'Sesión iniciada correctamente.')
             return redirect('registro_pacientes')
