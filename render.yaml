@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: softmed
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn sofmed.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8

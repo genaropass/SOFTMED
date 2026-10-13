@@ -9,7 +9,8 @@ from funciones.db import (
     obtener_paciente_por_id,
     obtener_historial_clinico,
     agregar_historial_clinico,
-    eliminar_paciente
+    eliminar_paciente,
+    db_name
 )
 import sqlite3
 from datetime import datetime
@@ -40,7 +41,7 @@ def inicio(request):
         
         if nombre and fecha_nacimiento and genero:
             try:
-                conn = sqlite3.connect('historial_clinico.db')
+                conn = sqlite3.connect(db_name)
                 cursor = conn.cursor()
                 cursor.execute("""
                     INSERT INTO pacientes (nombre, fecha_nacimiento, genero, servicio_medico, obra_social) 
@@ -126,7 +127,7 @@ def agregar_paciente(request):
         
         if nombre and fecha_nacimiento and genero:
             try:
-                conn = sqlite3.connect('historial_clinico.db')
+                conn = sqlite3.connect(db_name)
                 cursor = conn.cursor()
                 cursor.execute("""
                     INSERT INTO pacientes (nombre, fecha_nacimiento, genero, servicio_medico, obra_social) 

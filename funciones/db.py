@@ -1,7 +1,9 @@
 import sqlite3
 from datetime import datetime, date
+from pathlib import Path
 
-db_name='historial_clinico.db'
+BASE_DIR = Path(__file__).resolve().parent.parent
+db_name = str(BASE_DIR / 'historial_clinico.db')
 
 def calcular_edad(fecha_nacimiento_str):
     # Convertir la fecha de string a objeto date
